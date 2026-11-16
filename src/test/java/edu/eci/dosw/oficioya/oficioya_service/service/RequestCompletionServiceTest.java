@@ -69,7 +69,7 @@ class RequestCompletionServiceTest {
         Request r = solicitud(UUID.randomUUID(), RequestState.ACCEPTED);
         when(requestRepository.findById(r.getId())).thenReturn(Optional.of(r));
 
-        assertThrows(RecursosAjenosException.class,
+        RecursosAjenosException ex = assertThrows(RecursosAjenosException.class,
                 () -> service.completeRequest(r.getId(), UUID.randomUUID()));
 
         assertEquals("Recursos no pertenecientes al usuario", ex.getMessage());
@@ -105,7 +105,6 @@ class RequestCompletionServiceTest {
                 () -> service.completeRequest(id, UUID.randomUUID()));
 
         assertEquals(RecursoNoEncontradoException.SOLICITUD_NO_ENCONTRADA, ex.getMessage());
->>>>>>> 51424b3f43a1c413151b3d09449375a71be95b0f
     }
 
     private Request solicitud(UUID trabajador, RequestState estado) {
