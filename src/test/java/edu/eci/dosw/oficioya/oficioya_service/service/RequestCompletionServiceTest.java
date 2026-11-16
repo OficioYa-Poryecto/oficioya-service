@@ -71,7 +71,7 @@ class RequestCompletionServiceTest {
         RuntimeException ex = assertThrows(RuntimeException.class,
                 () -> service.completeRequest(r.getId(), UUID.randomUUID()));
 
-        assertEquals("Solo el trabajador asignado puede completar esta solicitud", ex.getMessage());
+        assertEquals("Recursos no pertenecientes al usuario", ex.getMessage());
         assertEquals(RequestState.ACCEPTED, r.getState());
         verify(requestRepository, never()).save(any());
     }
@@ -98,7 +98,7 @@ class RequestCompletionServiceTest {
         UUID id = UUID.randomUUID();
         when(requestRepository.findById(id)).thenReturn(Optional.empty());
 
-        assertThrows(NoSuchElementException.class, () -> service.completeRequest(id, UUID.randomUUID()));
+        assertThrows(edu.eci.dosw.oficioya.oficioya_service.exception.RecursoNoEncontradoException.class, () -> service.completeRequest(id, UUID.randomUUID()));
     }
 
     private Request solicitud(UUID trabajador, RequestState estado) {
