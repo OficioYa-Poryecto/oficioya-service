@@ -28,11 +28,18 @@ public class RequestCancellationService {
 
     private final UserClient userClient;
 
+    private final ReputationClient reputationClient;
+
     public RequestCancellationService(RequestRepository requestRepository, RequestMapper requestMapper, NotificationService notificationService, UserClient userClient) {
+        this(requestRepository, requestMapper, notificationService, userClient, null);
+    }
+
+    public RequestCancellationService(RequestRepository requestRepository, RequestMapper requestMapper, NotificationService notificationService, UserClient userClient, ReputationClient reputationClient) {
         this.requestRepository = requestRepository;
         this.requestMapper = requestMapper;
         this.notificationService = notificationService;
         this.userClient = userClient;
+        this.reputationClient = reputationClient;
     }
 
     public RequestModel cancelRequest(UUID requestId, UUID userId){
@@ -126,8 +133,12 @@ public class RequestCancellationService {
         //TODO: ELIMINAR FRANJA HORARIA DEL WORKER
     }
     private void penalizarReputacion(UUID workerId) {
-        // TODO: invocar microservicio de reputacion para restar 0.5 puntos
-        System.out.println("Penalizacion de reputacion -0.5 para trabajador: " + workerId);
+        if (reputationClient != null) {
+            reputationClient.penalize(workerId, 0.5);
+        } else {
+            // TODO: invocar microservicio de reputacion para restar 0.5 puntos
+            System.out.println("Penalizacion de reputacion -0.5 para trabajador: " + workerId);
+        }
     }
 
 }

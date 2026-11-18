@@ -47,6 +47,12 @@ class RequestCancellationServiceTest {
     @Mock
     NotificationService notificationService;
 
+    @Mock
+    UserClient userClient;
+
+    @Mock
+    ReputationClient reputationClient;
+
     @InjectMocks
     RequestCancellationService service;
 

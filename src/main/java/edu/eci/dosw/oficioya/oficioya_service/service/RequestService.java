@@ -43,14 +43,22 @@ public class RequestService {
     private final ResponseMapper responseMapper;
     private final NotificationService notificationService;
     private final UserClient userClient;
+    private final WorkerClient workerClient;
+    private final ReputationClient reputationClient;
     private static final Logger log = LoggerFactory.getLogger(RequestService.class);
 
     public RequestService(RequestRepository requestRepository, RequestMapper requestMapper, ResponseMapper responseMapper, NotificationService notificationService, UserClient userClient) {
+        this(requestRepository, requestMapper, responseMapper, notificationService, userClient, null, null);
+    }
+
+    public RequestService(RequestRepository requestRepository, RequestMapper requestMapper, ResponseMapper responseMapper, NotificationService notificationService, UserClient userClient, WorkerClient workerClient, ReputationClient reputationClient) {
         this.requestRepository = requestRepository;
         this.requestMapper = requestMapper;
         this.responseMapper = responseMapper;
         this.notificationService = notificationService;
         this.userClient = userClient;
+        this.workerClient = workerClient;
+        this.reputationClient = reputationClient;
     }
 
     public RequestResponse create(RequestRequest req, UUID contractorId){
@@ -72,6 +80,9 @@ public class RequestService {
         UserResponse worker = null;
 
         for (UUID id : workers){
+            if (workerClient != null && !workerClient.exists(id)) {
+                continue;
+            }
             worker = userClient.getUser(id);
 
             if (worker == null || worker.roles() == null || !worker.roles().contains("TRABAJADOR")) {
@@ -94,6 +105,9 @@ public class RequestService {
             //Si está libre se agrega
             if(true){
                 verifiedWorkers.add(id);
+                if (workerClient != null) {
+                    workerClient.reserveSlot(id, req.scheduledDateTime());
+                }
             }
         }
 
