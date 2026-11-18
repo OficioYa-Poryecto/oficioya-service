@@ -1,6 +1,7 @@
 package edu.eci.dosw.oficioya.oficioya_service.service;
 
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -19,11 +20,17 @@ public class RequestCompletionService {
     private final RequestRepository requestRepository;
     private final RequestMapper requestMapper;
     private final NotificationService notificationService;
+    private final ReputationClient reputationClient;
 
     public RequestCompletionService(RequestRepository requestRepository, RequestMapper requestMapper, NotificationService notificationService) {
+        this(requestRepository, requestMapper, notificationService, null);
+    }
+
+    public RequestCompletionService(RequestRepository requestRepository, RequestMapper requestMapper, NotificationService notificationService, ReputationClient reputationClient) {
         this.requestRepository = requestRepository;
         this.requestMapper = requestMapper;
         this.notificationService = notificationService;
+        this.reputationClient = reputationClient;
     }
 
     public RequestModel completeRequest(UUID requestId, UUID workerId) {
@@ -41,6 +48,10 @@ public class RequestCompletionService {
         request.setState(RequestState.COMPLETED);
         // Notificar al contratante que el trabajo fue completado (microservicio de notificaciones)
         notificationService.notifyCompleted(request.getContractorId(), requestId);
+        // Notificar a Reputation: servicio cumplido
+        if (reputationClient != null) {
+            reputationClient.notifyServiceCompleted(requestId, request.getWorkerId(), request.getContractorId(), LocalDateTime.now());
+        }
 
         return requestMapper.toModel(requestRepository.save(request));
     }

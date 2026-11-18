@@ -119,8 +119,10 @@ public class RequestCancellationService {
         if (request.getState() == RequestState.ACCEPTED && request.getScheduledDateTime() != null) {
             LocalDateTime limit = request.getScheduledDateTime().minusHours(24);
             if (LocalDateTime.now().isAfter(limit)) {
-                // Penalizacion de reputacion: -0.5 puntos al trabajador (se delega al microservicio de reputacion)
-                penalizarReputacion(workerId);
+                // Notificar a Reputation: cancelación tardía
+                if (reputationClient != null) {
+                    reputationClient.notifyLateCancellation(requestId, workerId, request.getScheduledDateTime(), LocalDateTime.now());
+                }
             }
         }
         request.setState(RequestState.CANCELED);
