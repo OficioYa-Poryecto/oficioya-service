@@ -20,6 +20,13 @@
 
 ![Diagrama de clases Service](/src/main/resources/docs/uml/DiagramaClases-Service.png)
 
+## URLs de producción
+
+- Service: http://oficioya-service-api-ffa2h9hmc7f0auaw.westus-01.azurewebsites.net/
+- Notification: http://oficioya-notificationapi-apffc2eygzgcbghp.westus-01.azurewebsites.net/
+- Health: http://oficioya-service-api-ffa2h9hmc7f0auaw.westus-01.azurewebsites.net/api/v1/health
+- OpenAPI: http://oficioya-service-api-ffa2h9hmc7f0auaw.westus-01.azurewebsites.net/v3/api-docs
+
 ## Cómo ejecutar
 
 1. Levantar el back con perfil `dev` en `http://localhost:8080`.
