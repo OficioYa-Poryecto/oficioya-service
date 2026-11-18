@@ -13,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import edu.eci.dosw.oficioya.oficioya_service.dto.ServiceReportResponse;
+import edu.eci.dosw.oficioya.oficioya_service.entity.Request;
+import edu.eci.dosw.oficioya.oficioya_service.model.RequestState;
 import edu.eci.dosw.oficioya.oficioya_service.repository.RequestRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,5 +36,33 @@ class ServiceReportTest {
         ServiceReportResponse report = service.getReport(LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
 
         assertEquals(0, report.total());
+    }
+
+    @Test
+    void reportWithData() {
+        UUID workerId = UUID.randomUUID();
+        Request req = new Request();
+        req.setId(UUID.randomUUID());
+        req.setWorkerId(workerId);
+        req.setContractorId(UUID.randomUUID());
+        req.setState(RequestState.COMPLETED);
+        req.setDescription("desc");
+        req.setNeighborhood("zone");
+        req.setExactAddress("addr");
+        req.setScheduledDateTime(LocalDateTime.now());
+        req.setDateCreated(LocalDateTime.now());
+
+        when(requestRepository.findAll()).thenReturn(List.of(req));
+
+        RequestService service = new RequestService(requestRepository,
+                org.mapstruct.factory.Mappers.getMapper(edu.eci.dosw.oficioya.oficioya_service.mapper.RequestMapper.class),
+                new edu.eci.dosw.oficioya.oficioya_service.mapper.ResponseMapper(),
+                new edu.eci.dosw.oficioya.oficioya_service.service.LoggingNotificationService(),
+                null);
+
+        ServiceReportResponse report = service.getReport(LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1));
+
+        assertEquals(1, report.total());
+        assertEquals(1L, report.byStatus().get("COMPLETED"));
     }
 }

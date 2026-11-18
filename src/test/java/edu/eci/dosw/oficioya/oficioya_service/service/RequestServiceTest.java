@@ -70,6 +70,33 @@ class RequestServiceTest {
     // ------------------------------------------------------------ listRequestsForUser
 
     @Test
+    @DisplayName("acceptRequest acepta una solicitud PENDING sin conflicto")
+    void aceptarSinConflictoExtra() {
+        Request r = solicitud(RequestState.PENDING, LocalDateTime.now());
+        r.setWorkerId(UUID.randomUUID());
+        r.setRootId(UUID.randomUUID());
+        when(requestRepository.findById(r.getId())).thenReturn(Optional.of(r));
+        when(requestRepository.findByRootId(r.getRootId())).thenReturn(List.of(r));
+        when(requestRepository.save(any(Request.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        RequestModel result = service.acceptRequest(r.getId(), r.getWorkerId());
+
+        assertEquals(RequestState.ACCEPTED, r.getState());
+    }
+
+    @Test
+    @DisplayName("deleteRequest elimina lógicamente una solicitud existente")
+    void eliminarSolicitudExistente() {
+        Request r = solicitud(RequestState.PENDING, LocalDateTime.now());
+        when(requestRepository.findById(r.getId())).thenReturn(Optional.of(r));
+        when(requestRepository.specialDeleteById(r.getId())).thenReturn(1);
+
+        boolean result = service.deleteRequest(r.getId());
+
+        assertTrue(result);
+    }
+
+    @Test
     @DisplayName("listRequestsForUser convierte las solicitudes del usuario a modelo")
     void listarSolicitudesDelUsuario() {
         Request a = solicitud(RequestState.PENDING, LocalDateTime.now());
