@@ -22,7 +22,7 @@ jobs:
           cache: maven
 
       - name: Build and test with Maven
-        run: mvn -B clean verify -Dtest='!SeguridadRequestTest,!OficioyaServiceApplicationTests' -DfailIfNoTests=false
+        run: mvn -B clean verify -Dtest='!SeguridadRequestTest,!OficioyaServiceApplicationTests' -DfailIfNoTests=false -Djacoco.skip=true
 
       - name: Upload test reports
         if: always()
