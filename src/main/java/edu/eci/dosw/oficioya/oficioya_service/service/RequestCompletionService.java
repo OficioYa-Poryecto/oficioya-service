@@ -4,6 +4,7 @@ import java.util.List;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.eci.dosw.oficioya.oficioya_service.entity.Request;
@@ -26,6 +27,7 @@ public class RequestCompletionService {
         this(requestRepository, requestMapper, notificationService, null);
     }
 
+    @Autowired
     public RequestCompletionService(RequestRepository requestRepository, RequestMapper requestMapper, NotificationService notificationService, ReputationClient reputationClient) {
         this.requestRepository = requestRepository;
         this.requestMapper = requestMapper;

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +52,7 @@ public class RequestService {
         this(requestRepository, requestMapper, responseMapper, notificationService, userClient, null, null);
     }
 
+    @Autowired
     public RequestService(RequestRepository requestRepository, RequestMapper requestMapper, ResponseMapper responseMapper, NotificationService notificationService, UserClient userClient, WorkerClient workerClient, ReputationClient reputationClient) {
         this.requestRepository = requestRepository;
         this.requestMapper = requestMapper;
