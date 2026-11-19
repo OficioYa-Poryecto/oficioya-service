@@ -22,10 +22,6 @@ public class RequestCompletionService {
     private final NotificationService notificationService;
     private final ReputationClient reputationClient;
 
-    public RequestCompletionService(RequestRepository requestRepository, RequestMapper requestMapper, NotificationService notificationService) {
-        this(requestRepository, requestMapper, notificationService, null);
-    }
-
     public RequestCompletionService(RequestRepository requestRepository, RequestMapper requestMapper, NotificationService notificationService, ReputationClient reputationClient) {
         this.requestRepository = requestRepository;
         this.requestMapper = requestMapper;
