@@ -30,10 +30,6 @@ public class RequestCancellationService {
 
     private final ReputationClient reputationClient;
 
-    public RequestCancellationService(RequestRepository requestRepository, RequestMapper requestMapper, NotificationService notificationService, UserClient userClient) {
-        this(requestRepository, requestMapper, notificationService, userClient, null);
-    }
-
     public RequestCancellationService(RequestRepository requestRepository, RequestMapper requestMapper, NotificationService notificationService, UserClient userClient, ReputationClient reputationClient) {
         this.requestRepository = requestRepository;
         this.requestMapper = requestMapper;

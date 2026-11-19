@@ -33,7 +33,7 @@ class WorkerStatsTest {
                 org.mapstruct.factory.Mappers.getMapper(edu.eci.dosw.oficioya.oficioya_service.mapper.RequestMapper.class),
                 new edu.eci.dosw.oficioya.oficioya_service.mapper.ResponseMapper(),
                 new edu.eci.dosw.oficioya.oficioya_service.service.LoggingNotificationService(),
-                null);
+                null, null, null);
 
         WorkerStatsResponse stats = service.getWorkerStats(workerId);
 
@@ -60,7 +60,7 @@ class WorkerStatsTest {
                 org.mapstruct.factory.Mappers.getMapper(edu.eci.dosw.oficioya.oficioya_service.mapper.RequestMapper.class),
                 new edu.eci.dosw.oficioya.oficioya_service.mapper.ResponseMapper(),
                 new edu.eci.dosw.oficioya.oficioya_service.service.LoggingNotificationService(),
-                null);
+                null, null, null);
 
         WorkerStatsResponse stats = service.getWorkerStats(workerId);
 
