@@ -47,10 +47,6 @@ public class RequestService {
     private final ReputationClient reputationClient;
     private static final Logger log = LoggerFactory.getLogger(RequestService.class);
 
-    public RequestService(RequestRepository requestRepository, RequestMapper requestMapper, ResponseMapper responseMapper, NotificationService notificationService, UserClient userClient) {
-        this(requestRepository, requestMapper, responseMapper, notificationService, userClient, null, null);
-    }
-
     public RequestService(RequestRepository requestRepository, RequestMapper requestMapper, ResponseMapper responseMapper, NotificationService notificationService, UserClient userClient, WorkerClient workerClient, ReputationClient reputationClient) {
         this.requestRepository = requestRepository;
         this.requestMapper = requestMapper;
