@@ -1,7 +1,10 @@
 package edu.eci.dosw.oficioya.oficioya_service.security;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.crypto.SecretKey;
@@ -57,8 +60,33 @@ public class JwtUtil {
         return validateToken(token).getSubject();
     }
 
+    public List<String> extractRoles(String token) {
+        Claims claims = validateToken(token);
+        List<String> roles = new ArrayList<>();
+
+        Object plural = claims.get("roles");
+        if (plural instanceof Collection<?> lista) {
+            for (Object r : lista) {
+                if (r != null) {
+                    roles.add(r.toString());
+                }
+            }
+        } else if (plural instanceof String unico) {
+            roles.add(unico);
+        }
+
+        if (roles.isEmpty()) {
+            String singular = claims.get("role", String.class);
+            if (singular != null) {
+                roles.add(singular);
+            }
+        }
+        return roles;
+    }
+
     public String extractRole(String token) {
-        return validateToken(token).get("role", String.class);
+        List<String> roles = extractRoles(token);
+        return roles.isEmpty() ? null : roles.get(0);
     }
 
     public boolean isTokenValid(String token) {

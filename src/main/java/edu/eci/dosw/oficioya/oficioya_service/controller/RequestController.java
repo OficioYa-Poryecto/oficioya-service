@@ -57,9 +57,10 @@ public class RequestController {
         RequestResponse response = requestService.create(req, CurrentUser.id(authentication));
         List<ImageDocument> images = req.images();
 
-        images.forEach(image -> {image.setRootId(response.rootId()); });
-
-        imageService.addImages(images);
+        if (images != null && !images.isEmpty()) {
+            images.forEach(image -> {image.setRootId(response.rootId()); });
+            imageService.addImages(images);
+        }
         return response;
     }
 
