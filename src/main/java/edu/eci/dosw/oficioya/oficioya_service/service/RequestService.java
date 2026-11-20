@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.eci.dosw.oficioya.oficioya_service.dto.ActiveResponse;
 import edu.eci.dosw.oficioya.oficioya_service.dto.RequestRequest;
 import edu.eci.dosw.oficioya.oficioya_service.dto.RequestResponse;
+import edu.eci.dosw.oficioya.oficioya_service.dto.ReportItem;
 import edu.eci.dosw.oficioya.oficioya_service.dto.ServiceReportResponse;
 import edu.eci.dosw.oficioya.oficioya_service.dto.UserResponse;
 import edu.eci.dosw.oficioya.oficioya_service.dto.WorkerStatsResponse;
@@ -177,7 +178,24 @@ public class RequestService {
         Map<Integer, Long> byHour = requests.stream()
                 .collect(Collectors.groupingBy(r -> r.getScheduledDateTime().getHour(), Collectors.counting()));
 
-        return new ServiceReportResponse(requests.size(), byStatus, byNeighborhood, byHour);
+        // Servicios cumplidos por día (solo COMPLETED)
+        List<ReportItem> completedByDay = requests.stream()
+                .filter(r -> r.getState() == RequestState.COMPLETED)
+                .collect(Collectors.groupingBy(
+                        r -> r.getScheduledDateTime().toLocalDate().toString(),
+                        Collectors.counting()))
+                .entrySet().stream()
+                .map(e -> new ReportItem(e.getKey(), e.getValue()))
+                .sorted((a, b) -> a.etiqueta().compareTo(b.etiqueta()))
+                .toList();
+
+        // Servicios cumplidos por oficio: requiere campo "trade/oficio" en Request (pendiente de agregar)
+        List<ReportItem> completedByTrade = List.of();
+        // Solicitudes por oficio (todas): requiere campo "trade/oficio" en Request (pendiente)
+        List<ReportItem> requestsByTrade = List.of();
+
+        return new ServiceReportResponse(requests.size(), byStatus, byNeighborhood, byHour,
+                completedByDay, completedByTrade, requestsByTrade);
     }
 
     /**
