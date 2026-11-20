@@ -22,35 +22,29 @@
 
 ## URLs de producción
 
-- Service: http://oficioya-service-api-ffa2h9hmc7f0auaw.westus-01.azurewebsites.net/
+- Service: https://oficioya-serviceapi-dye8exf8g6eudfbe.chilecentral-01.azurewebsites.net/
 - Notification: http://oficioya-notificationapi-apffc2eygzgcbghp.westus-01.azurewebsites.net/
-- Health: http://oficioya-service-api-ffa2h9hmc7f0auaw.westus-01.azurewebsites.net/api/v1/health
-- OpenAPI: http://oficioya-service-api-ffa2h9hmc7f0auaw.westus-01.azurewebsites.net/v3/api-docs
+- Health: https://oficioya-serviceapi-dye8exf8g6eudfbe.chilecentral-01.azurewebsites.net/api/v1/health
+- OpenAPI: https://oficioya-serviceapi-dye8exf8g6eudfbe.chilecentral-01.azurewebsites.net/v3/api-docs
+- Swagger UI: https://oficioya-serviceapi-dye8exf8g6eudfbe.chilecentral-01.azurewebsites.net/swagger-ui/index.html
 
 ## Cómo ejecutar
 
-1. Levantar el back con perfil `dev` en `http://localhost:8080`.
+1. Levantar el back con perfil `dev`. El puerto se define con la variable `SERVER_PORT` (por defecto 8086 en `application.properties`).
 2. El front se ejecuta en `http://localhost:5173` y se conecta por proxy a `/api`.
 3. Repositorio del front: https://github.com/juanjorivlo/DOSW_Lab9_Front_FLRGM
 
-## Endpoints principales (prefijo `/api/v1`)
+## Autenticación
 
-| Método | Endpoint | Descripción |
-|---|---|---|
-| POST | `/auth/login` | Login (devuelve JWT, opcional) |
-| GET | `/usuarios/me` | Perfil del usuario autenticado |
-| GET | `/trabajadores` | Listar trabajadores |
-| GET | `/trabajadores/{id}` | Detalle de trabajador |
-| GET | `/solicitudes` | Listar solicitudes del usuario |
-| PUT | `/solicitudes` | Crear solicitud (CONTRATANTE) |
-| PATCH | `/solicitudes/{id}/aceptar` | Aceptar (TRABAJADOR) |
-| PATCH | `/solicitudes/{id}/rechazar` | Rechazar (TRABAJADOR) |
-| PATCH | `/solicitudes/{id}/cancelar` | Cancelar (CONTRATANTE/TRABAJADOR) |
-| PATCH | `/solicitudes/{id}/complete` | Completar (TRABAJADOR) |
-| PATCH | `/solicitudes/{id}/accept-conflict` | Resolver conflicto (CONTRATANTE) |
-| DELETE | `/solicitudes/{id}` | Eliminar (CONTRATANTE) |
-| GET | `/services/workers/{id}/stats` | Estadísticas del trabajador |
-| GET | `/services/reports?from=&to=` | Reporte de solicitudes por período |
+Los endpoints, salvo `/auth/**`, `/v3/api-docs` y Swagger UI, exigen un JWT en el header `Authorization: Bearer <token>`. El servicio lee el rol del claim `roles` (lista) o, si no viene, del claim `role` (texto). El id del usuario viaja en el claim `sub` (UUID).
+
+## Endpoints
+
+La lista completa de endpoints, con sus roles y contratos, está en el Swagger UI (prefijo `/api/v1`). El Swagger es la fuente de referencia.
+
+### Crear solicitud
+
+`POST /requests` recibe `workersId` (lista de UUID, al menos uno), `description`, `neighborhood`, `exactAddress`, `scheduledDateTime` e `images` (opcional). Los cinco primeros son obligatorios y, si faltan o están vacíos, el servicio responde 400. Crea una solicitud por cada trabajador válido, todas con el mismo `rootId`, y responde `rootId`, `workersId`, `description`, `scheduledDateTime` y `sent` (cantidad de solicitudes creadas).
 
 ## Integración con otros microservicios
 
@@ -63,7 +57,7 @@
 ## Pruebas
 
 - Ejecutar: `mvn clean verify`
-- Cobertura mínima: 80% (JaCoCo)
+- Cobertura mínima: 80% (regla de JaCoCo configurada en el `pom.xml`)
 - Perfil de prueba: H2 en memoria (`application-test.properties`)
 
 ## Mock Up

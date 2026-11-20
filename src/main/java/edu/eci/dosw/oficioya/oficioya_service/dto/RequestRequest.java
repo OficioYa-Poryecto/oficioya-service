@@ -5,13 +5,16 @@ import java.util.List;
 import java.util.UUID;
 
 import edu.eci.dosw.oficioya.oficioya_service.model.document.ImageDocument;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 public record RequestRequest (
-    List<UUID> workersId, //A quienes se los quiero enviar
-    String description,
-    String neighborhood,
-    String exactAddress,
-    LocalDateTime scheduledDateTime,
+    @NotEmpty List<UUID> workersId, 
+    @NotBlank String description,
+    @NotBlank String neighborhood,
+    @NotBlank String exactAddress,
+    @NotNull LocalDateTime scheduledDateTime,
     List<ImageDocument> images
     ){
     

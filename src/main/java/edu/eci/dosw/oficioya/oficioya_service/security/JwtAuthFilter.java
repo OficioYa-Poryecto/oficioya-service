@@ -1,6 +1,7 @@
 package edu.eci.dosw.oficioya.oficioya_service.security;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,8 +37,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             try {
                 String token = header.substring(7);
                 UUID userId = jwtUtil.extractUserId(token);
-                String rol = jwtUtil.extractRole(token);
-                UserDetails userDetails = User.withUsername(userId.toString()).password("").authorities("ROLE_" + rol).build();
+                List<String> roles = jwtUtil.extractRoles(token);
+                String[] autoridades = roles.stream().map(r -> "ROLE_" + r).toArray(String[]::new);
+                UserDetails userDetails = User.withUsername(userId.toString()).password("").authorities(autoridades).build();
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
