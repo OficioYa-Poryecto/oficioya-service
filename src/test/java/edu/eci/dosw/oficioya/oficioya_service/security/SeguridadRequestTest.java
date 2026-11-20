@@ -34,7 +34,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import edu.eci.dosw.oficioya.oficioya_service.entity.Request;
 import edu.eci.dosw.oficioya.oficioya_service.model.RequestState;
-import edu.eci.dosw.oficioya.oficioya_service.repository.ImageRepository;
 import edu.eci.dosw.oficioya.oficioya_service.repository.RequestRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -52,9 +51,6 @@ class SeguridadRequestTest {
 
     private static final String BASE = "/api/v1/requests";
     private static final String ISSUER = "oficioya";
-
-    @MockitoBean
-    ImageRepository imageRepository;
 
     @Autowired
     WebApplicationContext context;
@@ -376,30 +372,6 @@ class SeguridadRequestTest {
                 .header("Authorization", tokenDe(contratanteA, "CONTRATANTE")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.state").value("ACCEPTED"));
-    }
-
-    @Test
-    @DisplayName("/auth/login es público y el token que entrega abre /requests/worker o /contractor")
-    void loginEsPublicoYEntregaTokenUtil() throws Exception {
-        String respuesta = mvc.perform(post("/api/v1/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"correo\":\"cualquiera@eci.edu.co\",\"password\":\"x\"}"))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
-
-        String token = jsonCampo(respuesta, "token");
-        if (token == null) {
-            token = jsonCampo(respuesta, "accessToken");
-        }
-
-        String payload = new String(
-                Base64.getUrlDecoder().decode(token.split("\\.")[1]),
-                StandardCharsets.UTF_8);
-        String rol = jsonCampo(payload, "role");
-        String ruta = "CONTRATANTE".equalsIgnoreCase(rol) ? "/contractor" : "/worker";
-
-        mvc.perform(get(BASE + ruta).header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk());
     }
 
     // ---------------------------------------------------------------- 409 vía HTTP

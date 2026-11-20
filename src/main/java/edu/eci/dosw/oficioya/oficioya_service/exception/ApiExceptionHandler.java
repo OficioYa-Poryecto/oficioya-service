@@ -59,6 +59,6 @@ public class ApiExceptionHandler {
     @ExceptionHandler(RequestSinWorkersException.class)
     public ResponseEntity<ApiError> listaVacia(RequestSinWorkersException ex, HttpServletRequest req) {
         return ResponseEntity.badRequest().body(
-                ApiError.of(42, "Lista de worker vacía", "Cuerpo de la petición no cumple", req.getRequestURI()));
+                ApiError.of(422, "Lista de worker vacía", "Cuerpo de la petición no cumple", req.getRequestURI()));
     }
 }

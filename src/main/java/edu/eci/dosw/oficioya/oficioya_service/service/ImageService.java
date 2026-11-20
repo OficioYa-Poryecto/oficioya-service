@@ -9,15 +9,12 @@ import org.springframework.stereotype.Service;
 
 import edu.eci.dosw.oficioya.oficioya_service.entity.Request;
 import edu.eci.dosw.oficioya.oficioya_service.model.document.ImageDocument;
-import edu.eci.dosw.oficioya.oficioya_service.repository.ImageRepository;
 
 @Service 
 public class ImageService {
-    private ImageRepository imageRepository;
     private RequestService requestService;
 
-    public ImageService(ImageRepository imageRepository, RequestService requestService){
-        this.imageRepository = imageRepository;
+    public ImageService(RequestService requestService){
         this.requestService = requestService;
     }
 
@@ -25,7 +22,7 @@ public class ImageService {
         /*
         Cambiar por conexión con el orquestador para guardarlas
         */
-        imageRepository.saveAll(images);
+        //imageRepository.saveAll(images);
     }
 
     public List<ImageDocument> findRequestImages(UUID requestId,UUID userId){
@@ -38,7 +35,8 @@ public class ImageService {
         /*
         Cambiar a conexión con el orquestador para buscar imagenes
         */
-        return imageRepository.findByRootId(found.orElse(null).getRootId());
+
+        return new ArrayList<ImageDocument>();
   
     }
 }

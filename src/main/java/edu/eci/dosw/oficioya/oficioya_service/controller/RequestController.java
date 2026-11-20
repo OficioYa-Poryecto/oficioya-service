@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.eci.dosw.oficioya.oficioya_service.dto.ActiveResponse;
 import edu.eci.dosw.oficioya.oficioya_service.dto.RequestRequest;
 import edu.eci.dosw.oficioya.oficioya_service.dto.RequestResponse;
 import edu.eci.dosw.oficioya.oficioya_service.model.RequestModel;
@@ -55,9 +57,10 @@ public class RequestController {
         RequestResponse response = requestService.create(req, CurrentUser.id(authentication));
         List<ImageDocument> images = req.images();
 
-        images.forEach(image -> {image.setRootId(response.rootId()); });
-
-        imageService.addImages(images);
+        if (images != null && !images.isEmpty()) {
+            images.forEach(image -> {image.setRootId(response.rootId()); });
+            imageService.addImages(images);
+        }
         return response;
     }
 
@@ -128,5 +131,14 @@ public class RequestController {
         else{
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Request not deleted");
         }
+    }
+
+    @GetMapping("/active")
+    @PreAuthorize("hasRole('SERVICE')")
+    public ActiveResponse active(
+            @RequestParam(required = true) UUID userId,
+            @RequestParam(required = true) String role) {
+
+        return requestService.active(userId, role);
     }
 }
