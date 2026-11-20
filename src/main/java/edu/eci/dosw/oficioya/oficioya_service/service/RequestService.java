@@ -310,15 +310,23 @@ public class RequestService {
     }
 
     public ActiveResponse active (UUID userId, String rol){
-        if (!rol.equals("CONTRATANTE") && !rol.equals("TRABAJADOR")){
+        int count = 0;
+        // TODO: VERIFICAR USUARIO
+        if (rol.equals("CONTRATANTE")){
+            count = requestRepository.countActiveContractor(userId);
+        }
+        else if (rol.equals("TRABAJADOR")){
+            count = requestRepository.countActiveWorker(userId);
+        }
+        else{
             throw new RolNoPermitidoException("Rol no permitido");
         }
 
-        if (requestRepository.countActiveUser(userId,rol) > 0){
+        if (count > 0){
             return new ActiveResponse(2);
         }
         else{
-            return new ActiveResponse(1)
+            return new ActiveResponse(1);
         }
 
     }

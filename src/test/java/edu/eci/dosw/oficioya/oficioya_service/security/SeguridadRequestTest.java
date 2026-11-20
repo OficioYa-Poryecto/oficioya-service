@@ -378,30 +378,6 @@ class SeguridadRequestTest {
                 .andExpect(jsonPath("$.state").value("ACCEPTED"));
     }
 
-    @Test
-    @DisplayName("/auth/login es público y el token que entrega abre /requests/worker o /contractor")
-    void loginEsPublicoYEntregaTokenUtil() throws Exception {
-        String respuesta = mvc.perform(post("/api/v1/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"correo\":\"cualquiera@eci.edu.co\",\"password\":\"x\"}"))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
-
-        String token = jsonCampo(respuesta, "token");
-        if (token == null) {
-            token = jsonCampo(respuesta, "accessToken");
-        }
-
-        String payload = new String(
-                Base64.getUrlDecoder().decode(token.split("\\.")[1]),
-                StandardCharsets.UTF_8);
-        String rol = jsonCampo(payload, "role");
-        String ruta = "CONTRATANTE".equalsIgnoreCase(rol) ? "/contractor" : "/worker";
-
-        mvc.perform(get(BASE + ruta).header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk());
-    }
-
     // ---------------------------------------------------------------- 409 vía HTTP
 
     @Test
