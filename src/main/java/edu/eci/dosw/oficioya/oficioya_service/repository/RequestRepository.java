@@ -82,4 +82,14 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
       WHERE r.id = :id
     """)
     int specialDeleteById(@Param("id") UUID requestId);
+
+    @Query("""
+
+    """)
+    int countActiveWorker(@Param("id") UUID userId);
+
+    @Query("""
+
+    """)
+    int countActiveContractor(@Param("id") UUID userId);
 }

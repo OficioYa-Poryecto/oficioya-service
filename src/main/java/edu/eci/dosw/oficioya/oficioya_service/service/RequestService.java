@@ -13,6 +13,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.eci.dosw.oficioya.oficioya_service.dto.ActiveResponse;
 import edu.eci.dosw.oficioya.oficioya_service.dto.RequestRequest;
 import edu.eci.dosw.oficioya.oficioya_service.dto.RequestResponse;
 import edu.eci.dosw.oficioya.oficioya_service.dto.ServiceReportResponse;
@@ -21,6 +22,7 @@ import edu.eci.dosw.oficioya.oficioya_service.dto.WorkerStatsResponse;
 import edu.eci.dosw.oficioya.oficioya_service.entity.Request;
 import edu.eci.dosw.oficioya.oficioya_service.exception.RecursoNoEncontradoException;
 import edu.eci.dosw.oficioya.oficioya_service.exception.RequestSinWorkersException;
+import edu.eci.dosw.oficioya.oficioya_service.exception.RolNoPermitidoException;
 import edu.eci.dosw.oficioya.oficioya_service.exception.TransicionInvalidaException;
 import edu.eci.dosw.oficioya.oficioya_service.mapper.RequestMapper;
 import edu.eci.dosw.oficioya.oficioya_service.mapper.ResponseMapper;
@@ -305,5 +307,19 @@ public class RequestService {
                 && request.getDateCreated().plusMinutes(MINUTOS_PARA_RESPONDER).isBefore(LocalDateTime.now())) {
             throw new TransicionInvalidaException("Tiempo de respuesta excedido (30 minutos)");
         }
+    }
+
+    public ActiveResponse active (UUID userId, String rol){
+        if (!rol.equals("CONTRATANTE") && !rol.equals("TRABAJADOR")){
+            throw new RolNoPermitidoException("Rol no permitido");
+        }
+
+        if (requestRepository.countActiveUser(userId,rol) > 0){
+            return new ActiveResponse(2);
+        }
+        else{
+            return new ActiveResponse(1)
+        }
+
     }
 }
