@@ -13,6 +13,10 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.eci.dosw.oficioya.oficioya_service.client.NotificationService;
+import edu.eci.dosw.oficioya.oficioya_service.client.ReputationClient;
+import edu.eci.dosw.oficioya.oficioya_service.client.UserClient;
+import edu.eci.dosw.oficioya.oficioya_service.client.WorkerClient;
 import edu.eci.dosw.oficioya.oficioya_service.dto.ActiveResponse;
 import edu.eci.dosw.oficioya.oficioya_service.dto.RequestRequest;
 import edu.eci.dosw.oficioya.oficioya_service.dto.RequestResponse;
@@ -121,9 +125,8 @@ public class RequestService {
         }
 
         List<Request> createdRequests = responseMapper.toEntities(contractorId, verifiedWorkers, req, newRootId);
-
+        
         createdRequests.forEach(w -> notificationService.notifyNewRequest(w.getWorkerId(), w.getId()));
-
         return responseMapper.toRespone(requestRepository.saveAll(createdRequests));
 
     }
@@ -341,10 +344,10 @@ public class RequestService {
         }
 
         if (count > 0){
-            return new ActiveResponse(2);
+            return new ActiveResponse(Long.valueOf(2));
         }
         else{
-            return new ActiveResponse(1);
+            return new ActiveResponse(Long.valueOf(1));
         }
 
     }
