@@ -10,8 +10,6 @@ public record ServiceReportResponse(
         Map<Integer, Long> byHour,
         List<ReportItem> completedByDay,
         List<ReportItem> completedByTrade,
-        List<ReportItem> requestsByTrade,
-        double averageTariff,
-        Map<String, Double> averageTariffByTrade
+        List<ReportItem> requestsByTrade
 ) {
 }

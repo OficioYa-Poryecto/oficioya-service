@@ -191,12 +191,9 @@ public class RequestService {
         List<ReportItem> completedByTrade = List.of();
         // Solicitudes por oficio (todas): requiere campo "trade/oficio" en Request (pendiente)
         List<ReportItem> requestsByTrade = List.of();
-        // Tarifa promedio: requiere campo "tariff" en Request (pendiente)
-        double averageTariff = 0.0;
-        Map<String, Double> averageTariffByTrade = Map.of();
 
         return new ServiceReportResponse(requests.size(), byStatus, byNeighborhood, byHour,
-                completedByDay, completedByTrade, requestsByTrade, averageTariff, averageTariffByTrade);
+                completedByDay, completedByTrade, requestsByTrade);
     }
 
     /**
