@@ -11,6 +11,7 @@ public record RequestRequest (
     String description,
     String neighborhood,
     String exactAddress,
+    String trade,
     LocalDateTime scheduledDateTime,
     List<ImageDocument> images
     ){
